@@ -12,7 +12,9 @@ machine:
 
 dependencies:
     override:
-        - echo "default ignored"
+        - mkdir -p "$GOPATH/src/$IMPORT_PATH"
+        - rsync -azC --delete ./ "$GOPATH/src/$IMPORT_PATH/"
+        
 test:
     override:
         - make test
