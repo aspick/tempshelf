@@ -2,6 +2,7 @@ machine:
     environment:
         GODIST: "go1.7.1.linux-amd64.tar.gz"
         IMPORT_PATH: "github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
+        GOPATH: "/home/ubuntu/.go_workspace"
     post:
         - mkdir -p download
         - test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
@@ -12,11 +13,17 @@ machine:
 
 dependencies:
     override:
+        - echo $GOPATH
         - mkdir -p "$GOPATH/src/$IMPORT_PATH"
-        - rsync -azC --delete ./ "$GOPATH/src/$IMPORT_PATH/"
-        
+        - rsync -az --delete ./ "$GOPATH/src/$IMPORT_PATH/"
+
 test:
     override:
-        - make test
+        - make test:
+            pwd: "$GOPATH/src/$IMPORT_PATH"
     post:
-        - make all
+        - make all:
+            pwd: "$GOPATH/src/$IMPORT_PATH"
+general:
+    artifacts:
+        - "$GOPATH/src/$IMPORT_PATH/bin/*"
