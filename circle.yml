@@ -23,7 +23,7 @@ test:
             pwd: "../.go_workspace/src/$IMPORT_PATH"
     post:
         - make all:
-            pwd: "$../.go_workspace/src/$IMPORT_PATH"
+            pwd: "../.go_workspace/src/$IMPORT_PATH"
 general:
     artifacts:
         - "$GOPATH/src/$IMPORT_PATH/bin/*"
