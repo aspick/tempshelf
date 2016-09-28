@@ -26,4 +26,4 @@ test:
     post:
         - make all:
             pwd: "../.go_workspace/src/$IMPORT_PATH"
-        - copy ../.go_workspace/src/$IMPORT_PATH/bin/* $CIRCLE_ARTIFACTS
+        - cp ../.go_workspace/src/$IMPORT_PATH/bin/* $CIRCLE_ARTIFACTS
