@@ -12,7 +12,7 @@ machine:
 
 dependencies:
     override:
-
+        - echo "default ignored"
 test:
     override:
         - make test
