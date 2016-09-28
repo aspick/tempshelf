@@ -6,11 +6,14 @@ import (
     "io/ioutil"
 )
 
+// Manifest represents manifest file
 type Manifest struct {
     Meta    ManifestMeta `json:"meta"`
     Files   []FileRecord `json:"files"`
 }
 
+
+// ManifestMeta contain storage config
 type ManifestMeta struct {
     Storage string  `json:"storage"`
     Bucket  string  `json:"bucket"`
@@ -20,11 +23,13 @@ type ManifestMeta struct {
     Prefix  string  `json:"prefix"`
 }
 
+// FileRecord represenets each file entity
 type FileRecord struct {
     Name    string  `json:"name"`
     Expand  bool    `json:"expand"`
 }
 
+// ParseManifestFile create Manifest from manifest.json path
 func ParseManifestFile(filepath string) Manifest {
     var manifest Manifest
     manifest.Load(filepath)
@@ -32,6 +37,7 @@ func ParseManifestFile(filepath string) Manifest {
     return manifest
 }
 
+// Load assign data from manifest.json path
 func (m *Manifest)Load(filepath string) {
     file, err := os.Open(filepath)
     if err != nil {
@@ -43,6 +49,7 @@ func (m *Manifest)Load(filepath string) {
     dec.Decode(m)
 }
 
+// Save write data to manifet.json path
 func (m *Manifest)Save(filepath string) {
     manifestString, _ := json.MarshalIndent(m, "", "  ")
     err := ioutil.WriteFile(filepath, manifestString, 0644)
