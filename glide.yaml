@@ -2,3 +2,5 @@ package: github.com/aspick/tempshelf
 import:
 - package: github.com/spf13/cobra
 - package: github.com/spf13/viper
+- package: github.com/aws/aws-sdk-go
+- package: github.com/pierrre/archivefile/zip

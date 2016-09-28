@@ -1,0 +1,15 @@
+{
+    "meta" : {
+        "storage" : "s3",
+        "bucket" : "test-bucket",
+        "region" : "test-region",
+        "token" : "test-token",
+        "secret" : "test-secret",
+        "prefix" : "app1"
+    },
+    "files" : [
+        {"name" : "file1", "expand" : false},
+        {"name" : "file2", "expand" : false},
+        {"name" : "file3", "expand" : true}
+    ]
+}

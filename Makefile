@@ -2,8 +2,8 @@
 NAME := tempshelf
 VERSION := $(shell git describe --tags --abbrev=0)
 REVISION := $(shell git rev-parse --short HEAD)
-LDFLAGS := -X 'main.version=$(VERSION)' \
-		   -X 'main.revision=$(REVISION)'
+LDFLAGS := -X github.com/aspick/tempshelf/cmd.version=$(VERSION) \
+		   -X github.com/aspick/tempshelf/cmd.revision=$(REVISION)
 
 # setup
 ## setup
@@ -19,7 +19,7 @@ test: deps
 
 ## install dependences
 deps: setup
-	glide update
+	glide install
 
 ## lint
 lint: setup

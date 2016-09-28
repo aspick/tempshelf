@@ -16,23 +16,93 @@ package cmd
 
 import (
 	"fmt"
+	"errors"
+	"path"
+	"path/filepath"
+	"github.com/aspick/tempshelf/tempshelf"
+	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/aws/aws-sdk-go/aws"
+    "github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/pierrre/archivefile/zip"
 )
 
 // pullCmd represents the pull command
 var pullCmd = &cobra.Command{
-	Use:   "pull",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Work your own magic here
+	Use:   "pull [flags] <manifet path>",
+	Short: "pull files binary with manifest.json file",
+	Long: ``,
+	RunE: func(cmd *cobra.Command, args []string) error {
 		fmt.Println("pull called")
+
+		if len(args) == 0 {
+			return errors.New("no input specified")
+		}
+
+		manifetPath := args[0]
+		fmt.Println("target", manifetPath)
+
+		targetAbspath, e1 := filepath.Abs(manifetPath)
+		if e1 != nil {
+			return e1
+		}
+		targetBaseDir := path.Dir(targetAbspath)
+		fmt.Println("target", targetBaseDir)
+
+		manifest := tempshelf.ParseManifestFile(manifetPath)
+
+		// create temp dir
+		tempDirPath := path.Join(targetBaseDir, ".tmp")
+		os.MkdirAll(tempDirPath, 0777)
+		defer os.RemoveAll(tempDirPath)
+
+		// download
+		s3cli := tempshelf.S3Client(manifest)
+		downloader := s3manager.NewDownloaderWithClient(s3cli)
+
+		for _, record := range manifest.Files {
+			var localPath = path.Join(targetBaseDir, record.Name)
+			if record.Expand == true {
+				localPath = path.Join(tempDirPath, record.Name)
+			}
+
+			key := manifest.Meta.Prefix + "/" + record.Name
+
+			file, ferr := os.Create(localPath)
+			if ferr != nil {
+				fmt.Println(ferr)
+				continue
+			}
+			defer file.Close()
+
+			_, s3err := downloader.Download(file, &s3.GetObjectInput{
+				Bucket: aws.String(manifest.Meta.Bucket),
+				Key:	aws.String(key),
+			})
+			if s3err != nil {
+				fmt.Println(s3err)
+			}
+		}
+
+		// unarchive
+		for _, record := range manifest.Files {
+			if record.Expand != true {
+				continue
+			}
+
+			// var targetBasename = strings.Replace(record.Name, ".zip", "", 1)
+			var dstPath = targetBaseDir
+			var srcPath = path.Join(tempDirPath, record.Name)
+
+			zipErr := zip.UnarchiveFile(srcPath, dstPath, nil)
+			if zipErr != nil {
+				fmt.Println("ZipErr", zipErr)
+			}
+		}
+
+		return nil
 	},
 }
 
