@@ -12,6 +12,8 @@ machine:
         - docker
 
 dependencies:
+    cache_directories:
+        - download
     override:
         - echo $GOPATH
         - mkdir -p "$GOPATH/src/$IMPORT_PATH"
@@ -26,4 +28,4 @@ test:
             pwd: "../.go_workspace/src/$IMPORT_PATH"
 general:
     artifacts:
-        - "$GOPATH/src/$IMPORT_PATH/bin/*"
+        - "~/.go_workspace/src/$IMPORT_PATH/bin"
