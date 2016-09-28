@@ -20,10 +20,10 @@ dependencies:
 test:
     override:
         - make test:
-            pwd: "$GOPATH/src/$IMPORT_PATH"
+            pwd: "../.go_workspace/src/$IMPORT_PATH"
     post:
         - make all:
-            pwd: "$GOPATH/src/$IMPORT_PATH"
+            pwd: "$../.go_workspace/src/$IMPORT_PATH"
 general:
     artifacts:
         - "$GOPATH/src/$IMPORT_PATH/bin/*"
