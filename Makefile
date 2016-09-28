@@ -4,6 +4,7 @@ VERSION := $(shell git describe --tags --abbrev=0)
 REVISION := $(shell git rev-parse --short HEAD)
 LDFLAGS := -X github.com/aspick/tempshelf/cmd.version=$(VERSION) \
 		   -X github.com/aspick/tempshelf/cmd.revision=$(REVISION)
+COMPILE := go build -ldflags "$(LDFLAGS)" -o bin/tempshelf main.go
 
 # setup
 ## setup
@@ -34,10 +35,24 @@ fmt: setup
 
 ## build binaries
 make: main.go cmd/*.go deps
-	go build -ldflags "$(LDFLAGS)" -o bin/tempshelf main.go
+	$(COMPILE)
+
+## setup closs compile
+setupx:
+	go get github.com/mitchellh/gox
+
+## build all platform
+all: make setupx
+	gox -ldflags="$(LDFLAGS)" -output="bin/{{.OS}}_{{.Arch}}/{{.Dir}}" -os="linux darwin windows" -arch="386 amd64"
+
+
+## cleanup binaries
+clean:
+	rm -rf bin
+
 
 ## show help
 help:
 	@make2help $(MAKEFILE_LIST)
 
-.PHONY: setup deps update test lint help
+.PHONY: setup deps update test lint help clean
