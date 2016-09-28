@@ -9,8 +9,8 @@ machine:
         - sudo tar -C /usr/local -xzf download/$GODIST
     services:
         - docker
-        
-dependences:
+
+dependencies:
     override:
 
 test:
