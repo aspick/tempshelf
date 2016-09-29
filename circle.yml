@@ -26,12 +26,12 @@ test:
 
 deployment:
     release:
-    branch: master
-    commands:
-        - make clean:
-            pwd: "../.go_workspace/src/$IMPORT_PATH"
-        - make all:
-            pwd: "../.go_workspace/src/$IMPORT_PATH"
-        - cp -rp ../.go_workspace/src/$IMPORT_PATH/bin/* $CIRCLE_ARTIFACTS
-        - go get github.com/tcnksm/ghr
-        - ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` $CIRCLE_ARTIFACTS/
+        branch: master
+        commands:
+            - make clean:
+                pwd: "../.go_workspace/src/$IMPORT_PATH"
+            - make all:
+                pwd: "../.go_workspace/src/$IMPORT_PATH"
+            - cp -rp ../.go_workspace/src/$IMPORT_PATH/bin/* $CIRCLE_ARTIFACTS
+            - go get github.com/tcnksm/ghr
+            - ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` $CIRCLE_ARTIFACTS/
