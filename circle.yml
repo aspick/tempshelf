@@ -27,6 +27,7 @@ test:
 deployment:
     release:
         branch: master
+        tag: /[0-9]+(\.[0-9]+)*/
         commands:
             - make clean:
                 pwd: "../.go_workspace/src/$IMPORT_PATH"
