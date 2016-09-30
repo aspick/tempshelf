@@ -34,6 +34,7 @@ deployment:
                 pwd: "../.go_workspace/src/$IMPORT_PATH"
             - cp -rp ../.go_workspace/src/$IMPORT_PATH/bin/* $CIRCLE_ARTIFACTS
             - rm $CIRCLE_ARTIFACTS/$CIRCLE_PROJECT_REPONAME
-            - for i in $CIRCLE_ARTIFACTS/*/; do zip -r "${i%/}.zip" "$i"; done
+            - for i in */; do zip -r "${i%/}.zip" "$i"; done:
+                pwd: $CIRCLE_ARTIFACTS
             - go get github.com/tcnksm/ghr
             - ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace `git describe --tags` $CIRCLE_ARTIFACTS/
